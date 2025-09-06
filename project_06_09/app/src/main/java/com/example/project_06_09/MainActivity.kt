@@ -20,11 +20,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var taskInput: EditText
     private lateinit var addButton: android.widget.Button
     private lateinit var tasksContainer: LinearLayout
+    private lateinit var taskdescriptionInput: EditText
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 // Инициализация элементов
         taskInput = findViewById(R.id.taskInput)
+        taskdescriptionInput = findViewById(R.id.editTextText)
         addButton = findViewById(R.id.addButton)
         tasksContainer = findViewById(R.id.tasksContainer)
 // Обработчик нажатия кнопки "Добавить"
@@ -43,21 +45,26 @@ class MainActivity : AppCompatActivity() {
         val taskView =
             LayoutInflater.from(this).inflate(R.layout.task_item, null)
         val taskTextView = taskView.findViewById<TextView>(R.id.taskText)
+        val taskdescView = taskView.findViewById<TextView>(R.id.taskTextdescription)
         val taskCheckbox =
             taskView.findViewById<CheckBox>(R.id.taskCheckbox)
         val deleteButton =
             taskView.findViewById<ImageButton>(R.id.deleteButton)
 // Устанавливаем текст задачи
         taskTextView.text = taskText
+        taskdescView.text = taskdescriptionInput.text.toString().trim()
 // Обработчик для чекбокса (отметка выполнения)
         taskCheckbox.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 taskTextView.paintFlags =
                     android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
                 taskTextView.setTextColor(resources.getColor(android.R.color.darker_gray))
+                taskdescView.visibility = View.GONE
+
             } else {
                 taskTextView.paintFlags = 0
                 taskTextView.setTextColor(resources.getColor(android.R.color.black))
+                taskdescView.visibility = View.VISIBLE
             }
         }
 // Обработчик для кнопки удаления
@@ -73,6 +80,7 @@ class MainActivity : AppCompatActivity() {
 // Добавляем задачу в контейнер
     tasksContainer.addView(taskView)
 // Очищаем поле ввода
+    taskdescriptionInput.text.clear()
     taskInput.text.clear()
 }
 }
