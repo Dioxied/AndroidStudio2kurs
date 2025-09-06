@@ -1,0 +1,65 @@
+*.iml
+.gradle
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+.android                                                                                                                                                                                                                                                             
+d-----        21.03.2024     14:16                .cache                                                                                                                                                                                                                                                               
+d-----        18.02.2025     12:29                .gradle                                                                                                                                                                                                                                                              
+d-----        19.02.2025     10:16                .idea                                                                                                                                                                                                                                                                
+d-----        29.04.2024     12:37                .idlerc                                                                                                                                                                                                                                                              
+d-----        17.04.2024     11:26                .librarymanager                                                                                                                                                                                                                                                      
+d-----        25.01.2024     10:09                .ms-ad
+d-----        08.04.2024     12:32                .nuget
+d-----        13.12.2024     12:21                .ssh                                                                                                                                                                                                                                                                 
+d-----        11.04.2024     14:29                .templateengine
+d-----        01.02.2025     14:42                .VirtualBox
+d-----        02.02.2024     13:45                .vscode                                                                                                                                                                                                                                                              
+d-r---        29.01.2022      0:53                3D Objects
+d-----        10.12.2024      9:21                Android-videoandsound-main
+d-----        06.02.2025     12:40                app
+d-r---        29.01.2022      0:53                Contacts
+d-r---        04.09.2025     13:10                Desktop                                                                                                                                                                                                                                                              
+d-r---        23.05.2025     12:02                Documents
+d-r---        02.09.2025      9:00                Downloads
+d-r---        25.01.2024     14:38                Favorites
+d-----        14.10.2024     11:56                go                                                                                                                                                                                                                                                                   
+d-----        06.02.2025     12:30                gradle
+d-----        10.12.2024      9:21                Kazino
+d-----        01.04.2025     14:04                kurs1
+d-r---        29.01.2022      0:53                Links
+List
+Music
+Myalculator
+MyApplication
+MyPet
+OneDrive
+Pictures
+Postman
+Saved Games
+Searches
+sources
+Valerya
+Videos
+.bash_history                                                                                                                                                                                                                                                        
+.emulator_console_auth_token
+build.gradle.kts                                                                                                                                                                                                                                                     
+gradle.properties
+gradlew
+gradlew.bat
+settings.gradle.kts
+speedX
+speedY
+x                                                                                                                                                                                                                                                                    
+y
+
