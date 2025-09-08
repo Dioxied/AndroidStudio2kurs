@@ -24,42 +24,44 @@ import android.database.sqlite.SQLiteOpenHelper
 
 class FastDB(context: Context) : SQLiteOpenHelper(context, "fast.db", null, 1) {
     override fun onCreate(db: SQLiteDatabase) {
-        db.execSQL("CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT, email TEXT)")
+        db.execSQL("CREATE TABLE tasks (id INTEGER PRIMARY KEY, title TEXT, descip TEXT, checker INTEGER DEFAULT 1)")
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        db.execSQL("DROP TABLE IF EXISTS users")
+        db.execSQL("DROP TABLE IF EXISTS tasks")
         onCreate(db)
     }
 
     // Быстрое добавление
-    fun addUser(name: String, email: String): Long {
+    fun addTask(title: String, descip: String): Long {
         val values = ContentValues().apply {
-            put("name", name)
-            put("email", email)
+            put("title", title)
+            put("descip", descip)
         }
-        return writableDatabase.insert("users", null, values)
+        return writableDatabase.insert("tasks", null, values)
     }
 
     // Быстрое получение всех
-    fun getAllUsers(): ArrayList<HashMap<String, String>> {
-        val users = ArrayList<HashMap<String, String>>()
-        val cursor = readableDatabase.rawQuery("SELECT * FROM users", null)
+    fun getAllTasks(): ArrayList<HashMap<String, String>> {
+        val tasks = ArrayList<HashMap<String, String>>()
+        val cursor = readableDatabase.rawQuery("SELECT * FROM tasks", null)
         
         while (cursor.moveToNext()) {
-            val user = HashMap<String, String>()
-            user["id"] = cursor.getString(0)
-            user["name"] = cursor.getString(1)
-            user["email"] = cursor.getString(2)
-            users.add(user)
+            val task = HashMap<String, String>()
+            task["id"] = cursor.getString(0)
+            task["title"] = cursor.getString(1)
+            task["descip"] = cursor.getString(2)
+            task["checker"] = cursor.getString(3)
+            tasks.add(task)
         }
         cursor.close()
-        return users
+        return tasks
     }
 
+
     // Быстрое удаление
-    fun deleteUser(id: String): Int {
-        return writableDatabase.delete("users", "id=?", arrayOf(id))
+    fun deleteTask(title: String): Int {
+        return writableDatabase.delete("tasks", "title=?", arrayOf(title))
     }
 }
 
@@ -70,6 +72,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tasksContainer: LinearLayout
     private lateinit var taskdescriptionInput: EditText
     private lateinit var  btnNextAtc: android.widget.Button
+    val db = FastDB(this)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -79,6 +82,7 @@ class MainActivity : AppCompatActivity() {
         addButton = findViewById(R.id.addButton)
         tasksContainer = findViewById(R.id.tasksContainer)
         btnNextAtc = findViewById(R.id.button123)
+
 
 // Обработчик нажатия кнопки "Добавить"
         addButton.setOnClickListener {
@@ -100,47 +104,9 @@ class MainActivity : AppCompatActivity() {
                 Toast.LENGTH_SHORT).show()
             return
         }
-
-// Создаем новый элемент задачи
-        val taskView =
-            LayoutInflater.from(this).inflate(R.layout.task_item, null)
-        val taskTextView = taskView.findViewById<TextView>(R.id.taskText)
-        val taskdescView = taskView.findViewById<TextView>(R.id.taskTextdescription)
-        val taskCheckbox =
-            taskView.findViewById<CheckBox>(R.id.taskCheckbox)
-        val deleteButton =
-            taskView.findViewById<ImageButton>(R.id.deleteButton)
-// Устанавливаем текст задачи
-        taskTextView.text = taskText
-        taskdescView.text = taskdescriptionInput.text.toString().trim()
-// Обработчик для чекбокса (отметка выполнения)
-        taskCheckbox.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                taskTextView.paintFlags =
-                    android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
-                taskTextView.setTextColor(resources.getColor(android.R.color.darker_gray))
-                taskdescView.visibility = View.GONE
-
-            } else {
-                taskTextView.paintFlags = 0
-                taskTextView.setTextColor(resources.getColor(android.R.color.black))
-                taskdescView.visibility = View.VISIBLE
-            }
-        }
-// Обработчик для кнопки удаления
-        deleteButton.setOnClickListener{
-        tasksContainer.removeView(taskView)
-        Toast.makeText(this, "Задача удалена",
-            Toast.LENGTH_SHORT).show()
-    }
-// Обработчик клика по всей задаче (отмечаем/снимаем отметку)
-    taskView.setOnClickListener {
-        taskCheckbox.isChecked = !taskCheckbox.isChecked
-    }
-// Добавляем задачу в контейнер
-    tasksContainer.addView(taskView)
-// Очищаем поле ввода
-    taskdescriptionInput.text.clear()
-    taskInput.text.clear()
+        val textDescip = taskdescriptionInput.text.toString().trim()
+        db.addTask(taskText, textDescip)
+        taskdescriptionInput.text.clear()
+        taskInput.text.clear()
 }
 }
