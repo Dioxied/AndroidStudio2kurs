@@ -17,6 +17,51 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 
+import android.content.ContentValues
+import android.content.Context
+import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteOpenHelper
+
+class FastDB(context: Context) : SQLiteOpenHelper(context, "fast.db", null, 1) {
+    override fun onCreate(db: SQLiteDatabase) {
+        db.execSQL("CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT, email TEXT)")
+    }
+
+    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        db.execSQL("DROP TABLE IF EXISTS users")
+        onCreate(db)
+    }
+
+    // Быстрое добавление
+    fun addUser(name: String, email: String): Long {
+        val values = ContentValues().apply {
+            put("name", name)
+            put("email", email)
+        }
+        return writableDatabase.insert("users", null, values)
+    }
+
+    // Быстрое получение всех
+    fun getAllUsers(): ArrayList<HashMap<String, String>> {
+        val users = ArrayList<HashMap<String, String>>()
+        val cursor = readableDatabase.rawQuery("SELECT * FROM users", null)
+        
+        while (cursor.moveToNext()) {
+            val user = HashMap<String, String>()
+            user["id"] = cursor.getString(0)
+            user["name"] = cursor.getString(1)
+            user["email"] = cursor.getString(2)
+            users.add(user)
+        }
+        cursor.close()
+        return users
+    }
+
+    // Быстрое удаление
+    fun deleteUser(id: String): Int {
+        return writableDatabase.delete("users", "id=?", arrayOf(id))
+    }
+}
 
 
 class MainActivity : AppCompatActivity() {
