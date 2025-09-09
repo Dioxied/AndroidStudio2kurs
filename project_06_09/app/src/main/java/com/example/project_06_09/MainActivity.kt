@@ -24,7 +24,7 @@ import android.database.sqlite.SQLiteOpenHelper
 
 class FastDB(context: Context) : SQLiteOpenHelper(context, "fast.db", null, 1) {
     override fun onCreate(db: SQLiteDatabase) {
-        db.execSQL("CREATE TABLE tasks (id INTEGER PRIMARY KEY, title TEXT, descip TEXT, checker INTEGER DEFAULT 1)")
+        db.execSQL("CREATE TABLE tasks (id INTEGER PRIMARY KEY, title TEXT, descip TEXT, checker TEXT DEFAULT 1)")
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
@@ -62,6 +62,12 @@ class FastDB(context: Context) : SQLiteOpenHelper(context, "fast.db", null, 1) {
     // Быстрое удаление
     fun deleteTask(title: String): Int {
         return writableDatabase.delete("tasks", "title=?", arrayOf(title))
+    }
+    fun quickUpdate(sql: String, vararg args: String): Boolean{
+        return try {
+            writableDatabase.execSQL(sql, args)
+            true
+        } catch (e: Exception){false}
     }
 }
 
@@ -108,5 +114,7 @@ class MainActivity : AppCompatActivity() {
         db.addTask(taskText, textDescip)
         taskdescriptionInput.text.clear()
         taskInput.text.clear()
+        Toast.makeText(this, "Задача успешно добавлена", Toast.LENGTH_SHORT).show()
+
 }
 }

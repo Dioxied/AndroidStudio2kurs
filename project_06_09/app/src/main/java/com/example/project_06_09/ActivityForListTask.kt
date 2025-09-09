@@ -24,8 +24,18 @@ class ActivityForListTask : AppCompatActivity() {
         taskconteiner = findViewById(R.id.tasksContainer2)
         btnBack = findViewById(R.id.buttonback)
         btnBack.setOnClickListener { finish() }
+
         val db = FastDB(this);
         val tasks = db.getAllTasks();
+        val taskView =
+            LayoutInflater.from(this).inflate(R.layout.task_item, null)
+        val taskTextView = taskView.findViewById<TextView>(R.id.taskText)
+        val taskdescView = taskView.findViewById<TextView>(R.id.taskTextdescription)
+        val taskCheckbox =
+            taskView.findViewById<CheckBox>(R.id.taskCheckbox)
+        val deleteButton =
+            taskView.findViewById<ImageButton>(R.id.deleteButton)
+
         tasks.forEach{task ->
             // Создаем новый элемент задачи
             val taskView =
@@ -36,40 +46,52 @@ class ActivityForListTask : AppCompatActivity() {
                 taskView.findViewById<CheckBox>(R.id.taskCheckbox)
             val deleteButton =
                 taskView.findViewById<ImageButton>(R.id.deleteButton)
+
 // Устанавливаем текст задачи
             taskTextView.text = task["title"]
             taskdescView.text = task["descip"]
 // Обработчик для чекбокса (отметка выполнения)
             taskCheckbox.setOnCheckedChangeListener { _, isChecked ->
-                if (isChecked && task["check"] == "1") {
+                if (isChecked) {
                     taskTextView.paintFlags =
                         android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
                     taskTextView.setTextColor(resources.getColor(android.R.color.darker_gray))
                     taskdescView.visibility = View.GONE
+                    db.quickUpdate("UPDATE tasks SET checker = ? WHERE title = ? AND descip = ?", "0", taskTextView.text.toString(), taskdescView.text.toString())
 
                 } else {
                     taskTextView.paintFlags = 0
                     taskTextView.setTextColor(resources.getColor(android.R.color.black))
                     taskdescView.visibility = View.VISIBLE
+                    db.quickUpdate("UPDATE tasks SET checker = ? WHERE title = ? AND descip = ?", "1", taskTextView.text.toString(), taskdescView.text.toString())
                 }
             }
-// Обработчик для кнопки удаления
             deleteButton.setOnClickListener{
                 taskconteiner.removeView(taskView)
                 Toast.makeText(this, "Задача удалена",
                     Toast.LENGTH_SHORT).show()
+                db.deleteTask(taskTextView.text.toString())
             }
 // Обработчик клика по всей задаче (отмечаем/снимаем отметку)
             taskView.setOnClickListener {
                 taskCheckbox.isChecked = !taskCheckbox.isChecked
             }
+            if (task["checker"] == "0"){taskCheckbox.isChecked = !taskCheckbox.isChecked}
+
+
 // Добавляем задачу в контейнер
             taskconteiner.addView(taskView)
+
+
         }
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+// Обработчик для кнопки удаления
+
     }
+
 }
